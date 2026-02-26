@@ -106,6 +106,7 @@ input {
 .list li {
   display: flex;
   align-items: center;
+  justify-content: center; /* add this */
   gap: 1.2rem;
 }
 
