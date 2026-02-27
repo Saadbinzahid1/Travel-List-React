@@ -11,12 +11,24 @@ export default function App() {
     setItems((items) => items.filter((item) => item.id !== id));
   }
 
+  function handleToggleItem(id) {
+    setItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, packed: !item.packed } : item,
+      ),
+    );
+  }
+
   return (
     <div className="app">
       <Logo />
       <Form onAddItem={handleAddItems} />
-      <PackingList items={items} onDeleteItem={handleDeleteItems} />
-      <Stats />
+      <PackingList
+        items={items}
+        onDeleteItem={handleDeleteItems}
+        onToggleItem={handleToggleItem}
+      />
+      <Stats items={items} />
     </div>
   );
 }
@@ -72,9 +84,14 @@ function Form({ onAddItem }) {
   );
 }
 
-function Item({ item, onDeleteItem }) {
+function Item({ item, onDeleteItem, onToggleItem }) {
   return (
     <li>
+      <input
+        type="checkbox"
+        value={item.packed}
+        onChange={() => onToggleItem(item.id)}
+      />
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.quantity} {item.description}
       </span>
@@ -83,22 +100,43 @@ function Item({ item, onDeleteItem }) {
   );
 }
 
-function PackingList({ items, onDeleteItem }) {
+function PackingList({ items, onDeleteItem, onToggleItem }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => (
-          <Item item={item} onDeleteItem={onDeleteItem} key={item.id} />
+          <Item
+            item={item}
+            onDeleteItem={onDeleteItem}
+            onToggleItem={onToggleItem}
+            key={item.id}
+          />
         ))}
       </ul>
     </div>
   );
 }
 
-function Stats() {
+function Stats({ items }) {
+  const numItems = items.length;
+  const numPacked = items.filter((item) => item.packed === true).length;
+  const percentage = (numPacked / numItems) * 100;
+
+  if (!items.length)
+    return (
+      <p className="stats">
+        <em>Start adding items to your travel list</em>
+      </p>
+    );
+
   return (
     <footer className="stats">
-      <em>You have x items on your list and you already packed X (X%)</em>
+      <em>
+        {percentage === 100
+          ? "You have packed everything. Lets go!"
+          : `You have ${numItems} items on your list and you already packed
+        ${numPacked} (${percentage}%)`}
+      </em>
     </footer>
   );
 }
