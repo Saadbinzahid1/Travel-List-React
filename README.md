@@ -8,7 +8,7 @@ Users can add items, mark them as packed, view packing progress, and sort the li
 
 ## 🌐 Live Preview
 
-<!-- [Live Demo](https://.netlify.app) -->
+[Live Demo](https://travellistinreact.netlify.app)
 
 ---
 
